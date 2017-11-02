@@ -1,0 +1,23 @@
+language: php
+
+sudo: false
+
+matrix:
+  include:
+    - php: 7.0
+    - php: 7.1
+  allow_failures:
+    - php: master
+  fast_finish: true
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - travis_retry composer self-update
+
+script:
+  - composer phpunit
+  - composer phpcs
+
