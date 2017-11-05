@@ -8,5 +8,5 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-[{travis.yml,composer.json}]
+[{.travis.yml,composer.json,.codeclimate.yml}]
 indent_size = 2

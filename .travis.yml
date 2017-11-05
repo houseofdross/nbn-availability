@@ -10,6 +10,10 @@ matrix:
     - php: master
   fast_finish: true
 
+env:
+  global:
+    - CC_TEST_REPORTER_ID=4d592b6953fe9ef38f777e6d13028b0eacee81c5f36fa656b0ee56bd22f0eed6
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -20,7 +24,15 @@ before_install:
 install:
   - travis_retry composer install --no-interaction --prefer-source
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
 script:
   - composer phpunit
   - composer phpcs
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
