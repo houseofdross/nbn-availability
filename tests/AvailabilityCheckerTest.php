@@ -5,6 +5,7 @@ namespace HodTest\NbnAvailability;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Hod\NbnAvailability\AvailabilityChecker;
+use Hod\NbnAvailability\Exception\ClientRequestException;
 use Hod\NbnAvailability\Exception\ServerResponseException;
 use PHPUnit\Framework\TestCase;
 
@@ -115,7 +116,7 @@ class AvailabilityCheckerTest extends TestCase
     public function test400ResponseReturnsException()
     {
         $clientError = new Response(
-            500,
+            400,
             [],
             'Please Feed Hamster'
         );
@@ -130,9 +131,9 @@ class AvailabilityCheckerTest extends TestCase
         try {
             $availabilityChecker->checkAvailability(100, 200);
             $this->fail('Expected Exception ClientRequestException was not thrown');
-        } catch (ServerResponseException $sre) {
-            $this->assertEquals('Please Feed Hamster', $sre->getMessage());
-            $this->assertEquals(400, $sre->getCode());
+        } catch (ClientRequestException $cre) {
+            $this->assertEquals('Please Feed Hamster', $cre->getMessage());
+            $this->assertEquals(400, $cre->getCode());
         }
     }
 }
