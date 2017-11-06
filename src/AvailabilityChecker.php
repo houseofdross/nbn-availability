@@ -4,6 +4,8 @@ namespace Hod\NbnAvailability;
 
 use GuzzleHttp\Client;
 use Hod\NbnAvailability\Entity\AvailabilityStatus;
+use Hod\NbnAvailability\Exception\ClientRequestException;
+use Hod\NbnAvailability\Exception\ServerResponseException;
 
 class AvailabilityChecker
 {
@@ -32,8 +34,12 @@ class AvailabilityChecker
             ],
         ]);
 
-        if ($response->getStatusCode() != 200) {
-            throw new \Exception('FIXME, this should be a specific error type..');
+        $statusCode = $response->getStatusCode();
+        if ($statusCode >= 400 && $statusCode < 500) {
+            throw new ClientRequestException($response->getBody(), $response->getStatusCode());
+        }
+        if ($statusCode >= 500 && $statusCode < 600) {
+            throw new ServerResponseException($response->getBody(), $response->getStatusCode());
         }
 
         $availability = \GuzzleHttp\json_decode($response->getBody(), true);

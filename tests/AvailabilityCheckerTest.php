@@ -5,6 +5,7 @@ namespace HodTest\NbnAvailability;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Hod\NbnAvailability\AvailabilityChecker;
+use Hod\NbnAvailability\Exception\ServerResponseException;
 use PHPUnit\Framework\TestCase;
 
 class AvailabilityCheckerTest extends TestCase
@@ -50,25 +51,6 @@ class AvailabilityCheckerTest extends TestCase
 
     public function testCheckAvailabilityMapsIsAvailableResponse()
     {
-        /*
-        {
-            "servingArea":{
-                "serviceType":"other",
-                "csaId":"CSA300000000325",
-                "serviceStatus":"available",
-                "techTypeMapLabel":"Fixed line",
-                "description":"XDA",
-                "techTypeLabel":null,
-                "id":"other:3NPR-A0096",
-                "rfsMessage":"",
-                "addressStatus":"0",
-                "techTypeDescription":null,
-                "serviceCategory":"brownfields",
-                "isDisconnectionDatePassed":false
-            },
-            "serviceAvailableAddress":false}"
-        */
-
         $successfulResponse = new Response(
             200,
             [],
@@ -104,5 +86,53 @@ class AvailabilityCheckerTest extends TestCase
         $this->assertEquals('Fixed line', $result->technologyType());
         $this->assertEquals('brownfields', $result->serviceCategory());
         $this->assertEquals('', $result->availableDate());
+    }
+
+    public function test500ResponseReturnsException()
+    {
+        $serverError = new Response(
+            500,
+            [],
+            'Hamster Dead'
+        );
+        $mockedClient = \Mockery::mock(Client::class);
+        $mockedClient
+            ->shouldReceive('request')
+            ->withArgs(['GET', 'https://www.nbnco.com.au/api/map/search.html?lat=100&lng=200', \Mockery::any()])
+            ->once()
+            ->andReturn($serverError);
+
+        $availabilityChecker = new AvailabilityChecker($mockedClient);
+        try {
+            $availabilityChecker->checkAvailability(100, 200);
+            $this->fail('Expected Exception ServerResponseException was not thrown');
+        } catch (ServerResponseException $sre) {
+            $this->assertEquals('Hamster Dead', $sre->getMessage());
+            $this->assertEquals(500, $sre->getCode());
+        }
+    }
+
+    public function test400ResponseReturnsException()
+    {
+        $clientError = new Response(
+            500,
+            [],
+            'Please Feed Hamster'
+        );
+        $mockedClient = \Mockery::mock(Client::class);
+        $mockedClient
+            ->shouldReceive('request')
+            ->withArgs(['GET', 'https://www.nbnco.com.au/api/map/search.html?lat=100&lng=200', \Mockery::any()])
+            ->once()
+            ->andReturn($clientError);
+
+        $availabilityChecker = new AvailabilityChecker($mockedClient);
+        try {
+            $availabilityChecker->checkAvailability(100, 200);
+            $this->fail('Expected Exception ClientRequestException was not thrown');
+        } catch (ServerResponseException $sre) {
+            $this->assertEquals('Please Feed Hamster', $sre->getMessage());
+            $this->assertEquals(400, $sre->getCode());
+        }
     }
 }

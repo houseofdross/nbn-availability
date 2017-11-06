@@ -26,7 +26,7 @@ class AvailabilityStatus implements \JsonSerializable
     {
         return [
             'serviceStatus' => $this->serviceStatus(),
-            'techologyType' => $this->technologyType(),
+            'technologyType' => $this->technologyType(),
             'serviceCategory' => $this->serviceCategory(),
             'availableDate' => $this->availableDate(),
         ];
