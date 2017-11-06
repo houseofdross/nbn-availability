@@ -11,6 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class AvailabilityCheckerTest extends TestCase
 {
+    public function testConstructorDoesntBlowUpWithoutClientArg()
+    {
+        $availabilityChecker = new AvailabilityChecker();
+        $this->assertNotNull($availabilityChecker);
+    }
+
     public function testCheckAvailabilityMapsNotAvailableResponse()
     {
         $successfulResponse = new Response(
