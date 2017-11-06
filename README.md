@@ -1,11 +1,11 @@
 NBN Availability Checker
 ========================
 
-[![Latest Version](https://img.shields.io/github/release/houseofdross/nbn-availability.svg?style=flat-square)](https://github.com/houseofdross/nbn-availability/releases)
+[![Latest Version](https://img.shields.io/packagist/v/hod/nbn-availability.svg?style=flat-square)](https://packagist.org/packages/hod/nbn-availability)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/houseofdross/nbn-availability/master.svg?style=flat-square)](https://travis-ci.org/houseofdross/nbn-availability)
-[![Maintainability](https://api.codeclimate.com/v1/badges/efa445488a81d46e7d33/maintainability)](https://codeclimate.com/github/houseofdross/nbn-availability/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/efa445488a81d46e7d33/test_coverage)](https://codeclimate.com/github/houseofdross/nbn-availability/test_coverage)
+[![Test Coverage](https://img.shields.io/codeclimate/coverage/github/houseofdross/nbn-availability.svg?style=flat-square)](https://codeclimate.com/github/houseofdross/nbn-availability/test_coverage)
+[![Issues](https://img.shields.io/github/issues/houseofdross/nbn-availability/total.svg?style=flat-square)](https://github.com/houseofdross/nbn-availability/issues)
 
 nbn-availability is a simple library to help check the availability
 of the National Broadband Network at a given location in Australia
@@ -44,12 +44,13 @@ Usage
 
 ``` php
 <?php
+require_once('vendor/autoload.php');
+
 use Hod\NbnAvailability\AvailabilityChecker;
 
 $checker = new AvailabilityChecker();
-$availabilityStatus = $availabilityChecker->checkAvailability(-37.8568731, 144.8961339);
+$availabilityStatus = $checker->checkAvailability(-37.8568731, 144.8961339);
 var_dump(json_encode($availabilityStatus));
-
 ```
 
 License
