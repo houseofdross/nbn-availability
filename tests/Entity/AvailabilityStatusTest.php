@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity;
+namespace HodTest\NbnAvailability\Entity;
 
 use Hod\NbnAvailability\Entity\AvailabilityStatus;
 use PHPUnit\Framework\TestCase;
